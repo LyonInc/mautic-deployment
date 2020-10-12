@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mautic-db
+  namespace: mautic
+  labels:
+    app: mautic-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mautic-db
+  template:
+    metadata:
+      labels:
+        app: mautic-db
+    spec:
+      volumes:
+        - name: mautic-db
+          persistentVolumeClaim:
+            claimName: mautic-db-pvc
+      containers:
+        - image: mysql:5.6
+          resources:
+            limits:
+              memory: 500Mi
+              cpu: 500m
+          name: mysql
+          env:
+          - name: MYSQL_ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: mysql-pass
+                key: password
+          ports:
+            - containerPort: 3306
+              name: mysql
+          volumeMounts:
+          - name: mautic-db
+            mountPath: /var/lib/mysql

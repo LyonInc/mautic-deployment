@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mautic-deployment
+  namespace: mautic
+  labels:
+    app: mautic
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mautic
+  template:
+    metadata:
+      labels:
+        app: mautic
+    spec:
+      containers:
+        - image: mautic/mautic 
+          name: mautic
+          env:
+          - name: MAUTIC_DB_HOST
+            value: mautic-db:3306
+          - name: MAUTIC_DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: mysql-pass
+                key: password
+          ports:
+            - containerPort: 80
+              name: mautic

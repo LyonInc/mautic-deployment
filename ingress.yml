@@ -1,0 +1,14 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: mautic-ingress
+  namespace: mautic
+spec:
+  rules:
+    - host: emails.lyon.com.ph
+      http:
+        paths:
+          - backend:
+              serviceName: mautic-service
+              servicePort: 80
+            pathType: ImplementationSpecific
